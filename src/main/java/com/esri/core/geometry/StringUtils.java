@@ -22,12 +22,12 @@
  email: contracts@esri.com
  */
 package com.esri.core.geometry;
+
 import java.util.Locale;
 
 class StringUtils {
 
-    static void appendDouble(double value, int precision,
-            StringBuilder stringBuilder) {
+    static void appendDouble(double value, int precision, StringBuilder stringBuilder) {
         if (precision < 0) {
             precision = 0;
         } else if (precision > 17) {
@@ -60,8 +60,7 @@ class StringUtils {
         }
     }
 
-    static void appendDoubleF(double value, int decimals,
-            StringBuilder stringBuilder) {
+    static void appendDoubleF(double value, int decimals, StringBuilder stringBuilder) {
         if (decimals < 0) {
             decimals = 0;
         } else if (decimals > 17) {

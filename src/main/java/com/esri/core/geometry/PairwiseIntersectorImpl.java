@@ -50,7 +50,8 @@ class PairwiseIntersectorImpl {
         static final int iterate = 2;
     }
 
-    PairwiseIntersectorImpl(MultiPathImpl multi_path_impl_a, MultiPathImpl multi_path_impl_b, double tolerance, boolean b_paths) {
+    PairwiseIntersectorImpl(MultiPathImpl multi_path_impl_a, MultiPathImpl multi_path_impl_b, double tolerance,
+            boolean b_paths) {
         m_multi_path_impl_a = multi_path_impl_a;
         m_multi_path_impl_b = multi_path_impl_b;
 
@@ -62,7 +63,8 @@ class PairwiseIntersectorImpl {
         GeometryAccelerators geometry_accelerators_a = multi_path_impl_a._getAccelerators();
 
         if (geometry_accelerators_a != null) {
-            QuadTreeImpl qtree_a = (!b_paths ? geometry_accelerators_a.getQuadTree() : geometry_accelerators_a.getQuadTreeForPaths());
+            QuadTreeImpl qtree_a = (!b_paths ? geometry_accelerators_a.getQuadTree()
+                    : geometry_accelerators_a.getQuadTreeForPaths());
 
             if (qtree_a != null) {
                 m_b_done = false;
@@ -84,7 +86,8 @@ class PairwiseIntersectorImpl {
             GeometryAccelerators geometry_accelerators_b = multi_path_impl_b._getAccelerators();
 
             if (geometry_accelerators_b != null) {
-                QuadTreeImpl qtree_b = (!b_paths ? geometry_accelerators_b.getQuadTree() : geometry_accelerators_b.getQuadTreeForPaths());
+                QuadTreeImpl qtree_b = (!b_paths ? geometry_accelerators_b.getQuadTree()
+                        : geometry_accelerators_b.getQuadTreeForPaths());
 
                 if (qtree_b != null) {
                     m_b_done = false;
@@ -109,7 +112,8 @@ class PairwiseIntersectorImpl {
             } else {
                 boolean b_simple_a = multi_path_impl_a.getIsSimple(0.0) >= 1;
                 boolean b_simple_b = multi_path_impl_b.getIsSimple(0.0) >= 1;
-                m_intersector = InternalUtils.getEnvelope2DIntersectorForParts(multi_path_impl_a, multi_path_impl_b, tolerance, b_simple_a, b_simple_b);
+                m_intersector = InternalUtils.getEnvelope2DIntersectorForParts(multi_path_impl_a, multi_path_impl_b,
+                        tolerance, b_simple_a, b_simple_b);
             }
         }
     }
@@ -122,17 +126,17 @@ class PairwiseIntersectorImpl {
             boolean b_searching = true;
             while (b_searching) {
                 switch (m_function) {
-                    case State.nextPath:
-                        b_searching = nextPath_();
-                        break;
-                    case State.nextSegment:
-                        b_searching = nextSegment_();
-                        break;
-                    case State.iterate:
-                        b_searching = iterate_();
-                        break;
-                    default:
-                        throw GeometryException.GeometryInternalError();
+                case State.nextPath:
+                    b_searching = nextPath_();
+                    break;
+                case State.nextSegment:
+                    b_searching = nextSegment_();
+                    break;
+                case State.iterate:
+                    b_searching = iterate_();
+                    break;
+                default:
+                    throw GeometryException.GeometryInternalError();
                 }
             }
 

@@ -24,8 +24,6 @@
 
 package com.esri.core.geometry;
 
-import com.esri.core.geometry.Operator.Type;
-
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -38,278 +36,247 @@ import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.util.HashMap;
 
+import com.esri.core.geometry.Operator.Type;
+
 /**
- *An abstract class that represent the basic OperatorFactory interface.
+ * An abstract class that represent the basic OperatorFactory interface.
  */
 public class OperatorFactoryLocal extends OperatorFactory {
-	private static final OperatorFactoryLocal INSTANCE = new OperatorFactoryLocal();
+    private static final OperatorFactoryLocal INSTANCE = new OperatorFactoryLocal();
 
-	private static final HashMap<Operator.Type, Operator> st_supportedOperators = new HashMap<Operator.Type, Operator>();
+    private static final HashMap<Operator.Type, Operator> st_supportedOperators = new HashMap<Operator.Type, Operator>();
 
-	static {
-		// Register all implemented operator allocators in the dictionary
+    static {
+        // Register all implemented operator allocators in the dictionary
 
-		st_supportedOperators.put(Type.Project, new OperatorProjectLocal());
-		st_supportedOperators.put(Type.ExportToJson,
-				new OperatorExportToJsonLocal());
-		st_supportedOperators.put(Type.ImportFromJson,
-				new OperatorImportFromJsonLocal());
-		st_supportedOperators.put(Type.ExportToESRIShape,
-				new OperatorExportToESRIShapeLocal());
-		st_supportedOperators.put(Type.ImportFromESRIShape,
-				new OperatorImportFromESRIShapeLocal());
+        st_supportedOperators.put(Type.Project, new OperatorProjectLocal());
+        st_supportedOperators.put(Type.ExportToJson, new OperatorExportToJsonLocal());
+        st_supportedOperators.put(Type.ImportFromJson, new OperatorImportFromJsonLocal());
+        st_supportedOperators.put(Type.ExportToESRIShape, new OperatorExportToESRIShapeLocal());
+        st_supportedOperators.put(Type.ImportFromESRIShape, new OperatorImportFromESRIShapeLocal());
 
-		st_supportedOperators.put(Type.Proximity2D,
-				new OperatorProximity2DLocal());
-		st_supportedOperators.put(Type.Centroid2D,
-				new OperatorCentroid2DLocal());
-		st_supportedOperators.put(Type.DensifyByLength,
-				new OperatorDensifyByLengthLocal());
+        st_supportedOperators.put(Type.Proximity2D, new OperatorProximity2DLocal());
+        st_supportedOperators.put(Type.Centroid2D, new OperatorCentroid2DLocal());
+        st_supportedOperators.put(Type.DensifyByLength, new OperatorDensifyByLengthLocal());
 
-		st_supportedOperators.put(Type.Relate, new OperatorRelateLocal());
-		st_supportedOperators.put(Type.Equals, new OperatorEqualsLocal());
-		st_supportedOperators.put(Type.Disjoint, new OperatorDisjointLocal());
+        st_supportedOperators.put(Type.Relate, new OperatorRelateLocal());
+        st_supportedOperators.put(Type.Equals, new OperatorEqualsLocal());
+        st_supportedOperators.put(Type.Disjoint, new OperatorDisjointLocal());
 
-		st_supportedOperators.put(Type.Intersects,
-				new OperatorIntersectsLocal());
-		st_supportedOperators.put(Type.Within, new OperatorWithinLocal());
-		st_supportedOperators.put(Type.Contains, new OperatorContainsLocal());
-		st_supportedOperators.put(Type.Crosses, new OperatorCrossesLocal());
-		st_supportedOperators.put(Type.Touches, new OperatorTouchesLocal());
-		st_supportedOperators.put(Type.Overlaps, new OperatorOverlapsLocal());
+        st_supportedOperators.put(Type.Intersects, new OperatorIntersectsLocal());
+        st_supportedOperators.put(Type.Within, new OperatorWithinLocal());
+        st_supportedOperators.put(Type.Contains, new OperatorContainsLocal());
+        st_supportedOperators.put(Type.Crosses, new OperatorCrossesLocal());
+        st_supportedOperators.put(Type.Touches, new OperatorTouchesLocal());
+        st_supportedOperators.put(Type.Overlaps, new OperatorOverlapsLocal());
 
-		st_supportedOperators.put(Type.SimplifyOGC,
-				new OperatorSimplifyLocalOGC());
-		st_supportedOperators.put(Type.Simplify, new OperatorSimplifyLocal());
-		st_supportedOperators.put(Type.Offset, new OperatorOffsetLocal());
+        st_supportedOperators.put(Type.SimplifyOGC, new OperatorSimplifyLocalOGC());
+        st_supportedOperators.put(Type.Simplify, new OperatorSimplifyLocal());
+        st_supportedOperators.put(Type.Offset, new OperatorOffsetLocal());
 
-		st_supportedOperators.put(Type.GeodeticDensifyByLength,
-				new OperatorGeodeticDensifyLocal());
-		
-	  st_supportedOperators.put(Type.ShapePreservingDensify,
-		    new OperatorShapePreservingDensifyLocal());	
-		
-	  st_supportedOperators.put(Type.GeodesicBuffer,
-		    new OperatorGeodesicBufferLocal());	
+        st_supportedOperators.put(Type.GeodeticDensifyByLength, new OperatorGeodeticDensifyLocal());
 
-		st_supportedOperators.put(Type.GeodeticLength,
-				new OperatorGeodeticLengthLocal());
-		st_supportedOperators.put(Type.GeodeticArea,
-				new OperatorGeodeticAreaLocal());
+        st_supportedOperators.put(Type.ShapePreservingDensify, new OperatorShapePreservingDensifyLocal());
 
-		st_supportedOperators.put(Type.Buffer, new OperatorBufferLocal());
-		st_supportedOperators.put(Type.Distance, new OperatorDistanceLocal());
-		st_supportedOperators.put(Type.Intersection,
-				new OperatorIntersectionLocal());
-		st_supportedOperators.put(Type.Difference,
-				new OperatorDifferenceLocal());
-		st_supportedOperators.put(Type.SymmetricDifference,
-				new OperatorSymmetricDifferenceLocal());
-		st_supportedOperators.put(Type.Clip, new OperatorClipLocal());
-		st_supportedOperators.put(Type.Cut, new OperatorCutLocal());
-		st_supportedOperators.put(Type.ExportToWkb,
-				new OperatorExportToWkbLocal());
-		st_supportedOperators.put(Type.ImportFromWkb,
-				new OperatorImportFromWkbLocal());
-		st_supportedOperators.put(Type.ExportToWkt,
-				new OperatorExportToWktLocal());
-		st_supportedOperators.put(Type.ImportFromWkt,
-				new OperatorImportFromWktLocal());
-		st_supportedOperators.put(Type.ImportFromGeoJson,
-				new OperatorImportFromGeoJsonLocal());
-        st_supportedOperators.put(Type.ExportToGeoJson,
-                new OperatorExportToGeoJsonLocal());
-		st_supportedOperators.put(Type.Union, new OperatorUnionLocal());
+        st_supportedOperators.put(Type.GeodesicBuffer, new OperatorGeodesicBufferLocal());
 
-		st_supportedOperators.put(Type.Generalize,
-				new OperatorGeneralizeLocal());
-		st_supportedOperators.put(Type.ConvexHull,
-				new OperatorConvexHullLocal());
-		st_supportedOperators.put(Type.Boundary, new OperatorBoundaryLocal());
+        st_supportedOperators.put(Type.GeodeticLength, new OperatorGeodeticLengthLocal());
+        st_supportedOperators.put(Type.GeodeticArea, new OperatorGeodeticAreaLocal());
 
-		// LabelPoint, - not ported
+        st_supportedOperators.put(Type.Buffer, new OperatorBufferLocal());
+        st_supportedOperators.put(Type.Distance, new OperatorDistanceLocal());
+        st_supportedOperators.put(Type.Intersection, new OperatorIntersectionLocal());
+        st_supportedOperators.put(Type.Difference, new OperatorDifferenceLocal());
+        st_supportedOperators.put(Type.SymmetricDifference, new OperatorSymmetricDifferenceLocal());
+        st_supportedOperators.put(Type.Clip, new OperatorClipLocal());
+        st_supportedOperators.put(Type.Cut, new OperatorCutLocal());
+        st_supportedOperators.put(Type.ExportToWkb, new OperatorExportToWkbLocal());
+        st_supportedOperators.put(Type.ImportFromWkb, new OperatorImportFromWkbLocal());
+        st_supportedOperators.put(Type.ExportToWkt, new OperatorExportToWktLocal());
+        st_supportedOperators.put(Type.ImportFromWkt, new OperatorImportFromWktLocal());
+        st_supportedOperators.put(Type.ImportFromGeoJson, new OperatorImportFromGeoJsonLocal());
+        st_supportedOperators.put(Type.ExportToGeoJson, new OperatorExportToGeoJsonLocal());
+        st_supportedOperators.put(Type.Union, new OperatorUnionLocal());
 
-	}
+        st_supportedOperators.put(Type.Generalize, new OperatorGeneralizeLocal());
+        st_supportedOperators.put(Type.ConvexHull, new OperatorConvexHullLocal());
+        st_supportedOperators.put(Type.Boundary, new OperatorBoundaryLocal());
 
-	private OperatorFactoryLocal() {
+        // LabelPoint, - not ported
 
-	}
+    }
 
+    private OperatorFactoryLocal() {
 
-	/**
-	 *Returns a reference to the singleton.
-	 */
-	public static OperatorFactoryLocal getInstance() {
-		return INSTANCE;
-	}
+    }
 
-	@Override
-	public Operator getOperator(Type type) {
-		if (st_supportedOperators.containsKey(type)) {
-			return st_supportedOperators.get(type);
-		} else {
-			throw new IllegalArgumentException();
-		}
-	}
+    /**
+     * Returns a reference to the singleton.
+     */
+    public static OperatorFactoryLocal getInstance() {
+        return INSTANCE;
+    }
 
-	@Override
-	public boolean isOperatorSupported(Operator.Type type) {
-		return st_supportedOperators.containsKey(type);
-	}
+    @Override
+    public Operator getOperator(Type type) {
+        if (st_supportedOperators.containsKey(type)) {
+            return st_supportedOperators.get(type);
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
 
-	public static void saveJSONToTextFileDbg(String file_name,
-			Geometry geometry, SpatialReference spatial_ref) {
-		if (file_name == null) {
-			throw new IllegalArgumentException();
-		}
+    @Override
+    public boolean isOperatorSupported(Operator.Type type) {
+        return st_supportedOperators.containsKey(type);
+    }
 
-		OperatorFactoryLocal engine = OperatorFactoryLocal.getInstance();
-		OperatorExportToJson exporterJSON = (OperatorExportToJson) engine
-				.getOperator(Operator.Type.ExportToJson);
-		String jsonString = exporterJSON.execute(spatial_ref, geometry);
+    public static void saveJSONToTextFileDbg(String file_name, Geometry geometry, SpatialReference spatial_ref) {
+        if (file_name == null) {
+            throw new IllegalArgumentException();
+        }
 
-		try {
-			FileOutputStream outfile = new FileOutputStream(file_name);
-			PrintStream p = new PrintStream(outfile);
-			p.print(jsonString);
-			p.close();
-		} catch (Exception ex) {
-		}
-	}
+        OperatorFactoryLocal engine = OperatorFactoryLocal.getInstance();
+        OperatorExportToJson exporterJSON = (OperatorExportToJson) engine.getOperator(Operator.Type.ExportToJson);
+        String jsonString = exporterJSON.execute(spatial_ref, geometry);
 
-	public static MapGeometry loadGeometryFromJSONFileDbg(String file_name) {
-		if (file_name == null) {
-			throw new IllegalArgumentException();
-		}
+        try {
+            FileOutputStream outfile = new FileOutputStream(file_name);
+            PrintStream p = new PrintStream(outfile);
+            p.print(jsonString);
+            p.close();
+        } catch (Exception ex) {
+        }
+    }
 
-		String jsonString = null;
-		Reader reader = null;
-		try {
-			FileInputStream stream = new FileInputStream(file_name);
-			reader = new BufferedReader(new InputStreamReader(stream));
-			StringBuilder builder = new StringBuilder();
-			char[] buffer = new char[8192];
-			int read;
-			while ((read = reader.read(buffer, 0, buffer.length)) > 0) {
-				builder.append(buffer, 0, read);
-			}
+    public static MapGeometry loadGeometryFromJSONFileDbg(String file_name) {
+        if (file_name == null) {
+            throw new IllegalArgumentException();
+        }
 
-			jsonString = builder.toString();
-		} catch (Exception ex) {
-		}
-		finally {
-			if (reader != null) {
-				try {
-					reader.close();
-				} catch (IOException e) {
-				}
-			}
-		}
+        String jsonString = null;
+        Reader reader = null;
+        try {
+            FileInputStream stream = new FileInputStream(file_name);
+            reader = new BufferedReader(new InputStreamReader(stream));
+            StringBuilder builder = new StringBuilder();
+            char[] buffer = new char[8192];
+            int read;
+            while ((read = reader.read(buffer, 0, buffer.length)) > 0) {
+                builder.append(buffer, 0, read);
+            }
 
-		MapGeometry mapGeom = OperatorImportFromJson.local().execute(Geometry.Type.Unknown, jsonString);
-		return mapGeom;
-	}
+            jsonString = builder.toString();
+        } catch (Exception ex) {
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                }
+            }
+        }
 
-	public static MapGeometry loadGeometryFromJSONStringDbg(String json) {
-		if (json == null) {
-			throw new IllegalArgumentException();
-		}
+        MapGeometry mapGeom = OperatorImportFromJson.local().execute(Geometry.Type.Unknown, jsonString);
+        return mapGeom;
+    }
 
-		MapGeometry mapGeom = null;
-		try {
-			mapGeom = OperatorImportFromJson.local().execute(Geometry.Type.Unknown, json);
-		} catch (Exception e) {
-			throw new IllegalArgumentException(e.toString());
-		}
-		return mapGeom;
-	}
-	
-	public static Geometry loadGeometryFromEsriShapeDbg(String file_name) {
-		if (file_name == null) {
-			throw new IllegalArgumentException();
-		}
+    public static MapGeometry loadGeometryFromJSONStringDbg(String json) {
+        if (json == null) {
+            throw new IllegalArgumentException();
+        }
 
-		try {
-			FileInputStream stream = new FileInputStream(file_name);
-			FileChannel fchan = stream.getChannel();
-			ByteBuffer bb = ByteBuffer.allocate((int) fchan.size());
-			fchan.read(bb);
-			bb.order(ByteOrder.LITTLE_ENDIAN);
-			Geometry g = OperatorImportFromESRIShape.local().execute(0,
-					Geometry.Type.Unknown, bb);
-			fchan.close();
-			stream.close();
-			return g;
-		} catch (Exception ex) {
-			throw new IllegalArgumentException();
-		}
-	}
+        MapGeometry mapGeom = null;
+        try {
+            mapGeom = OperatorImportFromJson.local().execute(Geometry.Type.Unknown, json);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e.toString());
+        }
+        return mapGeom;
+    }
 
-	public static void saveGeometryToEsriShapeDbg(String file_name, Geometry geometry) {
-		if (file_name == null) {
-			throw new IllegalArgumentException();
-		}
+    public static Geometry loadGeometryFromEsriShapeDbg(String file_name) {
+        if (file_name == null) {
+            throw new IllegalArgumentException();
+        }
 
-		try {
-			ByteBuffer bb = OperatorExportToESRIShape.local().execute(0, geometry);
-			FileOutputStream outfile = new FileOutputStream(file_name);
-			FileChannel fchan = outfile.getChannel();
-			fchan.write(bb);
-			fchan.close();
-			outfile.close();
-		} catch (Exception ex) {
-			throw new IllegalArgumentException();
-		}
-	}
-	
-	public static void saveToWKTFileDbg(String file_name,
-			Geometry geometry, SpatialReference spatial_ref) {
-		if (file_name == null) {
-			throw new IllegalArgumentException();
-		}
+        try {
+            FileInputStream stream = new FileInputStream(file_name);
+            FileChannel fchan = stream.getChannel();
+            ByteBuffer bb = ByteBuffer.allocate((int) fchan.size());
+            fchan.read(bb);
+            bb.order(ByteOrder.LITTLE_ENDIAN);
+            Geometry g = OperatorImportFromESRIShape.local().execute(0, Geometry.Type.Unknown, bb);
+            fchan.close();
+            stream.close();
+            return g;
+        } catch (Exception ex) {
+            throw new IllegalArgumentException();
+        }
+    }
 
-		String jsonString = OperatorExportToWkt.local().execute(0, geometry, null);
+    public static void saveGeometryToEsriShapeDbg(String file_name, Geometry geometry) {
+        if (file_name == null) {
+            throw new IllegalArgumentException();
+        }
 
-		try {
-			FileOutputStream outfile = new FileOutputStream(file_name);
-			PrintStream p = new PrintStream(outfile);
-			p.print(jsonString);
-			p.close();
-		} catch (Exception ex) {
-		}
-	}
+        try {
+            ByteBuffer bb = OperatorExportToESRIShape.local().execute(0, geometry);
+            FileOutputStream outfile = new FileOutputStream(file_name);
+            FileChannel fchan = outfile.getChannel();
+            fchan.write(bb);
+            fchan.close();
+            outfile.close();
+        } catch (Exception ex) {
+            throw new IllegalArgumentException();
+        }
+    }
 
-	public static Geometry loadGeometryFromWKTFileDbg(String file_name) {
-		if (file_name == null) {
-			throw new IllegalArgumentException();
-		}
+    public static void saveToWKTFileDbg(String file_name, Geometry geometry, SpatialReference spatial_ref) {
+        if (file_name == null) {
+            throw new IllegalArgumentException();
+        }
 
-		String s = null;
-		Reader reader = null;
-		try {
-			FileInputStream stream = new FileInputStream(file_name);
-			reader = new BufferedReader(new InputStreamReader(stream));
-			StringBuilder builder = new StringBuilder();
-			char[] buffer = new char[8192];
-			int read;
-			while ((read = reader.read(buffer, 0, buffer.length)) > 0) {
-				builder.append(buffer, 0, read);
-			}
+        String jsonString = OperatorExportToWkt.local().execute(0, geometry, null);
 
-			s = builder.toString();
-		} catch (Exception ex) {
-		}
-		finally {
-			if (reader != null) {
-				try {
-					reader.close();
-				} catch (IOException e) {
-				}
-			}
-		}
+        try {
+            FileOutputStream outfile = new FileOutputStream(file_name);
+            PrintStream p = new PrintStream(outfile);
+            p.print(jsonString);
+            p.close();
+        } catch (Exception ex) {
+        }
+    }
 
-		return OperatorImportFromWkt.local().execute(0, Geometry.Type.Unknown, s, null);
-	}
+    public static Geometry loadGeometryFromWKTFileDbg(String file_name) {
+        if (file_name == null) {
+            throw new IllegalArgumentException();
+        }
 
+        String s = null;
+        Reader reader = null;
+        try {
+            FileInputStream stream = new FileInputStream(file_name);
+            reader = new BufferedReader(new InputStreamReader(stream));
+            StringBuilder builder = new StringBuilder();
+            char[] buffer = new char[8192];
+            int read;
+            while ((read = reader.read(buffer, 0, buffer.length)) > 0) {
+                builder.append(buffer, 0, read);
+            }
+
+            s = builder.toString();
+        } catch (Exception ex) {
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+
+        return OperatorImportFromWkt.local().execute(0, Geometry.Type.Unknown, s, null);
+    }
 
 }

@@ -31,25 +31,22 @@ import com.esri.core.geometry.Geometry.GeometryAccelerationDegree;
  */
 public abstract class OperatorSimpleRelation extends Operator {
 
-	/**
-	 * Performs the given relation operation between two geometries.
-	 * 
-	 * @return Returns True if the relation holds, False otherwise.
-	 */
-	public abstract boolean execute(Geometry inputGeom1, Geometry inputGeom2,
-			SpatialReference sr, ProgressTracker progressTracker);
+    /**
+     * Performs the given relation operation between two geometries.
+     * 
+     * @return Returns True if the relation holds, False otherwise.
+     */
+    public abstract boolean execute(Geometry inputGeom1, Geometry inputGeom2, SpatialReference sr,
+            ProgressTracker progressTracker);
 
-	@Override
-	public boolean canAccelerateGeometry(Geometry geometry) {
-		return RelationalOperations.Accelerate_helper
-				.can_accelerate_geometry(geometry);
-	}
+    @Override
+    public boolean canAccelerateGeometry(Geometry geometry) {
+        return RelationalOperations.Accelerate_helper.can_accelerate_geometry(geometry);
+    }
 
-	@Override
-	public boolean accelerateGeometry(Geometry geometry,
-			SpatialReference spatialReference,
-			GeometryAccelerationDegree accelDegree) {
-		return RelationalOperations.Accelerate_helper.accelerate_geometry(
-				geometry, spatialReference, accelDegree);
-	}
+    @Override
+    public boolean accelerateGeometry(Geometry geometry, SpatialReference spatialReference,
+            GeometryAccelerationDegree accelDegree) {
+        return RelationalOperations.Accelerate_helper.accelerate_geometry(geometry, spatialReference, accelDegree);
+    }
 }

@@ -24,21 +24,18 @@
 
 package com.esri.core.geometry;
 
-import com.esri.core.geometry.Operator.Type;
-
 /**
  * Relational operation Touches.
  * 
  */
 public abstract class OperatorTouches extends OperatorSimpleRelation {
-	@Override
-	public Type getType() {
-		return Type.Touches;
-	}
+    @Override
+    public Type getType() {
+        return Type.Touches;
+    }
 
-	public static OperatorTouches local() {
-		return (OperatorTouches) OperatorFactoryLocal.getInstance()
-				.getOperator(Type.Touches);
-	}
+    public static OperatorTouches local() {
+        return (OperatorTouches) OperatorFactoryLocal.getInstance().getOperator(Type.Touches);
+    }
 
 }
